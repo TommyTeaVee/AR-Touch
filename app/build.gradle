@@ -1,0 +1,111 @@
+plugins {
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin.android
+}
+
+android {
+    namespace 'ir.erfansn.artouch'
+    compileSdk sdk.versions.compile.get().toInteger()
+
+    defaultConfig {
+        applicationId "ir.erfansn.artouch"
+        minSdk sdk.versions.min.get().toInteger()
+        targetSdk sdk.versions.target.get().toInteger()
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters 'arm64-v8a'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+    }
+
+    packagingOptions {
+        resources {
+            // DebugProbesKt.bin is not used when debugging on Android.
+            excludes += "DebugProbesKt.bin"
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':producer')
+    implementation project(':dispatcher')
+    
+    implementation libs.androidx.core
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.concurrent.futures
+    implementation libs.androidx.fragment.asProvider()
+    // To prevent ListenableFuture conflict this dependency temporary is added
+    implementation 'com.google.guava:guava:29.0-android'
+
+    implementation libs.google.android.material
+
+    implementation libs.bundles.navigation
+    implementation libs.bundles.camerax
+
+    def composeBom = platform(libs.androidx.compose.bom)
+    implementation composeBom
+    implementation libs.androidx.compose.material3
+    implementation libs.androidx.compose.ui.tooling.preview
+    implementation libs.androidx.constraintlayout.compose
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.lifecycle.viewmodel.compose
+
+    implementation libs.google.accompanist.themeadapter.m3
+
+    implementation libs.io.insert.koin.asProvider()
+    implementation libs.io.insert.koin.compose
+
+    testImplementation libs.junit4
+    testImplementation libs.io.insert.koin.test.asProvider()
+    testImplementation libs.io.insert.koin.test.junit4
+    testImplementation libs.robolectric
+    testImplementation libs.androidx.test.rules
+    testImplementation libs.androidx.compose.ui.test.junit4
+    testImplementation libs.androidx.test.ext
+    testImplementation libs.androidx.test.espresso.core
+    androidTestImplementation composeBom
+    androidTestImplementation libs.androidx.test.ext
+    androidTestImplementation libs.androidx.compose.ui.test.junit4
+    androidTestImplementation libs.androidx.test.uiautomator
+
+    debugImplementation libs.androidx.fragment.testing
+    debugImplementation libs.androidx.compose.ui.test.manifest
+    debugImplementation libs.androidx.compose.ui.tooling.asProvider()
+
+    androidTestUtil libs.androidx.test.orchestrator
+}

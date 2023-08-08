@@ -1,0 +1,28 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    versionCatalogs {
+        create("sdk") {
+            version("compile", "33")
+            version("min", "28")
+            version("target", "33")
+        }
+    }
+}
+rootProject.name = "AR Touch"
+include ':app'
+include ':producer'
+include ':dispatcher'
+include ':common'
+include ':benchmark'
